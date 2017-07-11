@@ -38,6 +38,17 @@ impl<W: FixedBitString> BitLengthString<W> {
 	pub fn contains(&self, bits: &W) -> bool {
 		self.bits.contains(self.len, bits)
 	}
+
+	/// get read access to the bits
+	pub fn bits(&self) -> &W {
+		&self.bits
+	}
+
+	/// length of bit string (same as
+	/// [`BitString::len()`](bit_string/trait.BitString.html#tymethod.len))
+	pub fn len(&self) -> usize {
+		self.len
+	}
 }
 
 impl<W: FixedBitString> BitString for BitLengthString<W> {
@@ -57,7 +68,7 @@ impl<W: FixedBitString> BitString for BitLengthString<W> {
 	}
 
 	fn len(&self) -> usize {
-		debug_assert!(self.len < W::len());
+		debug_assert!(self.len <= W::len());
 		self.len
 	}
 
