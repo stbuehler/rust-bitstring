@@ -11,6 +11,10 @@ use fixed_bit_string::FixedBitString;
 /// [`BitString`](bit_string/trait.BitString.html) by also storing a
 /// length.
 #[derive(Clone, Debug, Hash)]
+// TODO: drop the PartialEq + Eq manual implementations; instead require
+// the underyling type to implement sane semantics (i.e. not contain any
+// data outside what is accessible through "FixedBitString")
+#[allow(clippy::derive_hash_xor_eq)]
 pub struct BitLengthString<W: FixedBitString> {
 	/// underlying bit string with fixed length
 	bits: W,
@@ -112,6 +116,8 @@ impl<W: FixedBitString> PartialOrd for BitLengthString<W> {
 		Some(self.cmp(rhs))
 	}
 }
+
+// TODO: we derive `Hash`, so we probably could derive this too
 impl<W: FixedBitString> PartialEq for BitLengthString<W> {
 	fn eq(&self, rhs: &Self) -> bool {
 		Ordering::Equal == self.cmp(rhs)
