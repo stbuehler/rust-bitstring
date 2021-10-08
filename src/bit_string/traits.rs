@@ -20,6 +20,7 @@ use std::cmp::{
 ///
 /// Apart from this special case writing a bit must not modify any other
 /// bits or change the length.
+#[allow(clippy::len_without_is_empty)]
 pub trait BitString {
 	/// Get the `ndx`th bit.
 	///
@@ -45,6 +46,7 @@ pub trait BitString {
 	fn flip(&mut self, ndx: usize);
 
 	/// Current length of the bit string in bits.
+	#[allow(clippy::len_without_is_empty)]
 	fn len(&self) -> usize;
 
 	/// Set current length to `len`.

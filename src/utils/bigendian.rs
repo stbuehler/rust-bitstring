@@ -161,19 +161,19 @@ macro_rules! impl_big_endian_for {
 			fn on(slice: &mut [Self], ndx: usize) {
 				let mask = Self::mask(ndx);
 				let slice_ndx = ndx / Self::elembits();
-				slice[slice_ndx] = slice[slice_ndx] | mask;
+				slice[slice_ndx] |= mask;
 			}
 
 			fn off(slice: &mut [Self], ndx: usize) {
 				let mask = Self::mask(ndx);
 				let slice_ndx = ndx / Self::elembits();
-				slice[slice_ndx] = slice[slice_ndx] & !mask;
+				slice[slice_ndx] &= !mask;
 			}
 
 			fn flip(slice: &mut [Self], ndx: usize) {
 				let mask = Self::mask(ndx);
 				let slice_ndx = ndx / Self::elembits();
-				slice[slice_ndx] = slice[slice_ndx] ^ mask;
+				slice[slice_ndx] ^= mask;
 			}
 
 			fn shared_prefix_len(slice: &[Self], other: &[Self], max_len: usize) -> usize {
@@ -207,7 +207,7 @@ macro_rules! impl_big_endian_for {
 					}
 				} else if slice_ndx < slice.len() {
 					let mask = Self::mask(ndx - 1) - 1;
-					slice[slice_ndx] = slice[slice_ndx] & !mask;
+					slice[slice_ndx] &= !mask;
 					for i in slice_ndx + 1..slice.len() {
 						slice[i] = 0;
 					}
@@ -244,7 +244,7 @@ macro_rules! impl_big_endian_for {
 					}
 				} else if slice_ndx < slice.len() {
 					let mask = Self::mask(ndx - 1) - 1;
-					slice[slice_ndx] = slice[slice_ndx] | mask;
+					slice[slice_ndx] |= mask;
 					for i in slice_ndx + 1..slice.len() {
 						slice[i] = !0;
 					}

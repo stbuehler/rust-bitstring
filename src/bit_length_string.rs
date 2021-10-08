@@ -46,6 +46,7 @@ impl<W: FixedBitString> BitLengthString<W> {
 
 	/// length of bit string (same as
 	/// [`BitString::len()`](bit_string/trait.BitString.html#tymethod.len))
+	#[allow(clippy::len_without_is_empty)]
 	pub fn len(&self) -> usize {
 		self.len
 	}
