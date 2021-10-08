@@ -1,4 +1,7 @@
-use std::cmp::{Ordering,min};
+use std::cmp::{
+	min,
+	Ordering,
+};
 
 use bit_string::BitString;
 use fixed_bit_string::FixedBitString;
@@ -7,7 +10,7 @@ use fixed_bit_string::FixedBitString;
 /// [`FixedBitString`](fixed_bit_string/trait.FixedBitString.html) to a
 /// [`BitString`](bit_string/trait.BitString.html) by also storing a
 /// length.
-#[derive(Clone,Debug,Hash)]
+#[derive(Clone, Debug, Hash)]
 pub struct BitLengthString<W: FixedBitString> {
 	/// underlying bit string with fixed length
 	bits: W,
@@ -28,10 +31,7 @@ impl<W: FixedBitString> BitLengthString<W> {
 	pub fn new(mut bits: W, len: usize) -> Self {
 		assert!(len <= W::len());
 		bits.set_false_from(len);
-		BitLengthString{
-			bits: bits,
-			len: len,
-		}
+		BitLengthString { bits, len }
 	}
 
 	/// check whether another bit string `bits` is prefixed by `self`
@@ -83,7 +83,7 @@ impl<W: FixedBitString> BitString for BitLengthString<W> {
 	}
 
 	fn null() -> Self {
-		BitLengthString{
+		BitLengthString {
 			bits: W::new_all_false(),
 			len: 0,
 		}
@@ -116,5 +116,4 @@ impl<W: FixedBitString> PartialEq for BitLengthString<W> {
 		Ordering::Equal == self.cmp(rhs)
 	}
 }
-impl<W: FixedBitString> Eq for BitLengthString<W> {
-}
+impl<W: FixedBitString> Eq for BitLengthString<W> {}

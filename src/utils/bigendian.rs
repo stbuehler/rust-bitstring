@@ -1,5 +1,7 @@
-use std::cmp::min;
-use std::mem::size_of;
+use std::{
+	cmp::min,
+	mem::size_of,
+};
 
 /// Generic helper methods to treat [u*]-slices as big endian bit
 /// strings.
@@ -91,7 +93,7 @@ pub trait BigEndianBitString: Sized {
 }
 
 macro_rules! impl_big_endian_for {
-	($t:ty) => (
+	($t:ty) => {
 		impl BigEndianBitString for $t {
 			fn mask(ndx: usize) -> Self {
 				let bits = Self::elembits();
@@ -111,7 +113,9 @@ macro_rules! impl_big_endian_for {
 						let (r, o) = slice[i].overflowing_add(1);
 						slice[i] = r;
 						overflow = o;
-						if !overflow { break; }
+						if !overflow {
+							break;
+						}
 					}
 					overflow
 				} else {
@@ -126,11 +130,15 @@ macro_rules! impl_big_endian_for {
 						let (r, o) = slice[i].overflowing_add(1);
 						slice[i] = r;
 						overflow = o;
-						if !overflow { break; }
+						if !overflow {
+							break;
+						}
 					}
 
 					// touched last bit in prefix? -> overflow
-					if overflow_elem & last_prefix_bit_mask != slice[slice_ndx] & last_prefix_bit_mask {
+					if overflow_elem & last_prefix_bit_mask
+						!= slice[slice_ndx] & last_prefix_bit_mask
+					{
 						// restore bits at slice_ndx which belong to
 						// prefix. as an overflow just happened, the
 						// remaining bits must be 0.
@@ -169,7 +177,9 @@ macro_rules! impl_big_endian_for {
 			}
 
 			fn shared_prefix_len(slice: &[Self], other: &[Self], max_len: usize) -> usize {
-				if 0 == max_len { return 0; }
+				if 0 == max_len {
+					return 0;
+				}
 				// slice index of last bit to compare
 				let slice_ndx = (max_len - 1) / Self::elembits();
 				for i in 0..slice_ndx {
@@ -180,7 +190,10 @@ macro_rules! impl_big_endian_for {
 				}
 				let diff = slice[slice_ndx] ^ other[slice_ndx];
 				if 0 != diff {
-					min(max_len, slice_ndx * Self::elembits() + diff.leading_zeros() as usize)
+					min(
+						max_len,
+						slice_ndx * Self::elembits() + diff.leading_zeros() as usize,
+					)
 				} else {
 					max_len
 				}
@@ -192,11 +205,10 @@ macro_rules! impl_big_endian_for {
 					for i in slice_ndx..slice.len() {
 						slice[i] = 0;
 					}
-				}
-				else if slice_ndx < slice.len() {
+				} else if slice_ndx < slice.len() {
 					let mask = Self::mask(ndx - 1) - 1;
 					slice[slice_ndx] = slice[slice_ndx] & !mask;
-					for i in slice_ndx+1..slice.len() {
+					for i in slice_ndx + 1..slice.len() {
 						slice[i] = 0;
 					}
 				}
@@ -206,14 +218,19 @@ macro_rules! impl_big_endian_for {
 				let slice_ndx = ndx / Self::elembits();
 				if 0 == ndx % Self::elembits() {
 					for i in slice_ndx..slice.len() {
-						if 0 != slice[i] { return false; }
+						if 0 != slice[i] {
+							return false;
+						}
 					}
-				}
-				else if slice_ndx < slice.len() {
+				} else if slice_ndx < slice.len() {
 					let mask = Self::mask(ndx - 1) - 1;
-					if 0 != slice[slice_ndx] & mask { return false; }
-					for i in slice_ndx+1..slice.len() {
-						if 0 != slice[i] { return false; }
+					if 0 != slice[slice_ndx] & mask {
+						return false;
+					}
+					for i in slice_ndx + 1..slice.len() {
+						if 0 != slice[i] {
+							return false;
+						}
 					}
 				}
 				true
@@ -225,11 +242,10 @@ macro_rules! impl_big_endian_for {
 					for i in slice_ndx..slice.len() {
 						slice[i] = !0;
 					}
-				}
-				else if slice_ndx < slice.len() {
+				} else if slice_ndx < slice.len() {
 					let mask = Self::mask(ndx - 1) - 1;
 					slice[slice_ndx] = slice[slice_ndx] | mask;
-					for i in slice_ndx+1..slice.len() {
+					for i in slice_ndx + 1..slice.len() {
 						slice[i] = !0;
 					}
 				}
@@ -239,14 +255,19 @@ macro_rules! impl_big_endian_for {
 				let slice_ndx = ndx / Self::elembits();
 				if 0 == ndx % Self::elembits() {
 					for i in slice_ndx..slice.len() {
-						if slice[i] != !0 { return false; }
+						if slice[i] != !0 {
+							return false;
+						}
 					}
-				}
-				else if slice_ndx < slice.len() {
+				} else if slice_ndx < slice.len() {
 					let mask = Self::mask(ndx - 1) - 1;
-					if slice[slice_ndx] | !mask != !0 { return false; }
-					for i in slice_ndx+1..slice.len() {
-						if slice[i] != !0 { return false; }
+					if slice[slice_ndx] | !mask != !0 {
+						return false;
+					}
+					for i in slice_ndx + 1..slice.len() {
+						if slice[i] != !0 {
+							return false;
+						}
 					}
 				}
 				true
@@ -255,7 +276,9 @@ macro_rules! impl_big_endian_for {
 			fn contains(slice: &[Self], prefix: usize, other: &[Self]) -> bool {
 				let slice_ndx = prefix / Self::elembits();
 				for i in 0..slice_ndx {
-					if slice[i] != other[i] { return false; }
+					if slice[i] != other[i] {
+						return false;
+					}
 				}
 				if 0 == prefix % Self::elembits() {
 					return true;
@@ -264,13 +287,13 @@ macro_rules! impl_big_endian_for {
 				0 == mask & (slice[slice_ndx] ^ other[slice_ndx])
 			}
 		}
-	)
+	};
 }
 
-impl_big_endian_for!{u8}
-impl_big_endian_for!{u16}
-impl_big_endian_for!{u32}
-impl_big_endian_for!{u64}
+impl_big_endian_for! {u8}
+impl_big_endian_for! {u16}
+impl_big_endian_for! {u32}
+impl_big_endian_for! {u64}
 
 #[cfg(test)]
 mod tests {
@@ -285,19 +308,55 @@ mod tests {
 		assert_eq!(7, u8::shared_prefix_len(&[0b1100_0000], &[0b1100_0001], 7));
 		assert_eq!(7, u8::shared_prefix_len(&[0b1100_0000], &[0b1100_0001], 8));
 
-		assert_eq!(0, u8::shared_prefix_len(&[0b0000_0000, 0b0000_0000], &[0b0000_0000, 0b0000_0000], 0));
-		assert_eq!(0, u8::shared_prefix_len(&[0b0000_0000, 0b0000_0000], &[0b1000_0000, 0b0000_0000], 8));
-		assert_eq!(1, u8::shared_prefix_len(&[0b0000_0000, 0b0000_0000], &[0b0000_0000, 0b0000_0000], 1));
-		assert_eq!(1, u8::shared_prefix_len(&[0b0000_0000, 0b0000_0000], &[0b0100_0000, 0b0000_0000], 8));
-		assert_eq!(7, u8::shared_prefix_len(&[0b1100_0000, 0b0000_0000], &[0b1100_0001, 0b0000_0000], 7));
-		assert_eq!(7, u8::shared_prefix_len(&[0b1100_0000, 0b0000_0000], &[0b1100_0001, 0b0000_0000], 8));
+		assert_eq!(
+			0,
+			u8::shared_prefix_len(&[0b0000_0000, 0b0000_0000], &[0b0000_0000, 0b0000_0000], 0)
+		);
+		assert_eq!(
+			0,
+			u8::shared_prefix_len(&[0b0000_0000, 0b0000_0000], &[0b1000_0000, 0b0000_0000], 8)
+		);
+		assert_eq!(
+			1,
+			u8::shared_prefix_len(&[0b0000_0000, 0b0000_0000], &[0b0000_0000, 0b0000_0000], 1)
+		);
+		assert_eq!(
+			1,
+			u8::shared_prefix_len(&[0b0000_0000, 0b0000_0000], &[0b0100_0000, 0b0000_0000], 8)
+		);
+		assert_eq!(
+			7,
+			u8::shared_prefix_len(&[0b1100_0000, 0b0000_0000], &[0b1100_0001, 0b0000_0000], 7)
+		);
+		assert_eq!(
+			7,
+			u8::shared_prefix_len(&[0b1100_0000, 0b0000_0000], &[0b1100_0001, 0b0000_0000], 8)
+		);
 
-		assert_eq!(8, u8::shared_prefix_len(&[0b0010_1000, 0b0000_0000], &[0b0010_1000, 0b0000_0000], 8));
-		assert_eq!(8, u8::shared_prefix_len(&[0b0010_1000, 0b0000_0000], &[0b0010_1000, 0b1000_0000], 16));
-		assert_eq!(9, u8::shared_prefix_len(&[0b0010_1000, 0b0000_0000], &[0b0010_1000, 0b0000_0000], 9));
-		assert_eq!(9, u8::shared_prefix_len(&[0b0010_1000, 0b0000_0000], &[0b0010_1000, 0b0100_0000], 16));
-		assert_eq!(15, u8::shared_prefix_len(&[0b0010_1000, 0b1100_0000], &[0b0010_1000, 0b1100_0001], 15));
-		assert_eq!(15, u8::shared_prefix_len(&[0b0010_1000, 0b1100_0000], &[0b0010_1000, 0b1100_0001], 16));
+		assert_eq!(
+			8,
+			u8::shared_prefix_len(&[0b0010_1000, 0b0000_0000], &[0b0010_1000, 0b0000_0000], 8)
+		);
+		assert_eq!(
+			8,
+			u8::shared_prefix_len(&[0b0010_1000, 0b0000_0000], &[0b0010_1000, 0b1000_0000], 16)
+		);
+		assert_eq!(
+			9,
+			u8::shared_prefix_len(&[0b0010_1000, 0b0000_0000], &[0b0010_1000, 0b0000_0000], 9)
+		);
+		assert_eq!(
+			9,
+			u8::shared_prefix_len(&[0b0010_1000, 0b0000_0000], &[0b0010_1000, 0b0100_0000], 16)
+		);
+		assert_eq!(
+			15,
+			u8::shared_prefix_len(&[0b0010_1000, 0b1100_0000], &[0b0010_1000, 0b1100_0001], 15)
+		);
+		assert_eq!(
+			15,
+			u8::shared_prefix_len(&[0b0010_1000, 0b1100_0000], &[0b0010_1000, 0b1100_0001], 16)
+		);
 	}
 
 	fn u8_inc<S: AsMut<[u8]>>(mut slice: S, prefix: usize) -> (bool, S) {
@@ -307,17 +366,53 @@ mod tests {
 	#[test]
 	fn inc() {
 		// make sure overflow doesn't change the fixed prefix
-		assert_eq!((true , [0b0000_0000, 0b0000_0000]), u8_inc([0b0000_0000, 0b0000_0000], 16));
-		assert_eq!((false, [0b0000_0000, 0b0000_0001]), u8_inc([0b0000_0000, 0b0000_0000], 15));
-		assert_eq!((true , [0b0000_0000, 0b0000_0000]), u8_inc([0b0000_0000, 0b0000_0001], 15));
-		assert_eq!((true , [0b0000_0000, 0b0000_1010]), u8_inc([0b0000_0000, 0b0000_1011], 15));
-		assert_eq!((true , [0b0000_0000, 0b0000_1110]), u8_inc([0b0000_0000, 0b0000_1111], 15));
-		assert_eq!((true , [0b0000_0000, 0b1111_1110]), u8_inc([0b0000_0000, 0b1111_1111], 15));
-		assert_eq!((true , [0b0000_0001, 0b1111_1110]), u8_inc([0b0000_0001, 0b1111_1111], 15));
-		assert_eq!((false, [0b0000_0000, 0b0000_0001]), u8_inc([0b0000_0000, 0b0000_0000], 8));
-		assert_eq!((true , [0b0000_0000, 0b0000_0000]), u8_inc([0b0000_0000, 0b1111_1111], 8));
-		assert_eq!((true , [0b0000_0001, 0b0000_0000]), u8_inc([0b0000_0001, 0b1111_1111], 8));
-		assert_eq!((false, [0b0000_0000, 0b0000_0001]), u8_inc([0b0000_0000, 0b0000_0000], 0));
-		assert_eq!((true , [0b0000_0000, 0b0000_0000]), u8_inc([0b1111_1111, 0b1111_1111], 0));
+		assert_eq!(
+			(true, [0b0000_0000, 0b0000_0000]),
+			u8_inc([0b0000_0000, 0b0000_0000], 16)
+		);
+		assert_eq!(
+			(false, [0b0000_0000, 0b0000_0001]),
+			u8_inc([0b0000_0000, 0b0000_0000], 15)
+		);
+		assert_eq!(
+			(true, [0b0000_0000, 0b0000_0000]),
+			u8_inc([0b0000_0000, 0b0000_0001], 15)
+		);
+		assert_eq!(
+			(true, [0b0000_0000, 0b0000_1010]),
+			u8_inc([0b0000_0000, 0b0000_1011], 15)
+		);
+		assert_eq!(
+			(true, [0b0000_0000, 0b0000_1110]),
+			u8_inc([0b0000_0000, 0b0000_1111], 15)
+		);
+		assert_eq!(
+			(true, [0b0000_0000, 0b1111_1110]),
+			u8_inc([0b0000_0000, 0b1111_1111], 15)
+		);
+		assert_eq!(
+			(true, [0b0000_0001, 0b1111_1110]),
+			u8_inc([0b0000_0001, 0b1111_1111], 15)
+		);
+		assert_eq!(
+			(false, [0b0000_0000, 0b0000_0001]),
+			u8_inc([0b0000_0000, 0b0000_0000], 8)
+		);
+		assert_eq!(
+			(true, [0b0000_0000, 0b0000_0000]),
+			u8_inc([0b0000_0000, 0b1111_1111], 8)
+		);
+		assert_eq!(
+			(true, [0b0000_0001, 0b0000_0000]),
+			u8_inc([0b0000_0001, 0b1111_1111], 8)
+		);
+		assert_eq!(
+			(false, [0b0000_0000, 0b0000_0001]),
+			u8_inc([0b0000_0000, 0b0000_0000], 0)
+		);
+		assert_eq!(
+			(true, [0b0000_0000, 0b0000_0000]),
+			u8_inc([0b1111_1111, 0b1111_1111], 0)
+		);
 	}
 }

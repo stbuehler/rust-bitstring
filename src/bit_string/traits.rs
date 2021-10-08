@@ -1,4 +1,7 @@
-use std::cmp::{min,Ordering};
+use std::cmp::{
+	min,
+	Ordering,
+};
 
 /// A bit string with variable (but possibly limited) length.
 ///
@@ -71,7 +74,7 @@ pub trait BitString {
 		let max_len = min(self.len(), other.len());
 		for i in 0..max_len {
 			if self.get(i) != other.get(i) {
-				return i
+				return i;
 			}
 		}
 		max_len
@@ -79,7 +82,9 @@ pub trait BitString {
 
 	/// Longest shared prefix of two bit strings.
 	fn shared_prefix(&self, other: &Self) -> Self
-	where Self: Clone {
+	where
+		Self: Clone,
+	{
 		let mut a = self.clone();
 		a.clip(self.shared_prefix_len(other));
 		a

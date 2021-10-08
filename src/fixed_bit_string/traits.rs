@@ -30,7 +30,9 @@ pub trait FixedBitString {
 	///
 	/// Should panic if `prefix > self.len()`.
 	fn iter(&self, prefix: usize) -> Iter<Self>
-	where Self: Sized+Clone {
+	where
+		Self: Sized + Clone,
+	{
 		Iter::new(self.clone(), prefix)
 	}
 
@@ -84,7 +86,7 @@ pub trait FixedBitString {
 		let max_len = min(max_len, Self::len());
 		for i in 0..max_len {
 			if self.get(i) != other.get(i) {
-				return i
+				return i;
 			}
 		}
 		max_len

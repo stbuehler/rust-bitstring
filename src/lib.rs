@@ -5,8 +5,10 @@
 pub use self::bit_length_string::*;
 
 // re-export. sadly duplicates the doc pages...
-pub use self::bit_string::BitString;
-pub use self::fixed_bit_string::FixedBitString;
+pub use self::{
+	bit_string::BitString,
+	fixed_bit_string::FixedBitString,
+};
 
 mod address;
 mod bit_length_string;
