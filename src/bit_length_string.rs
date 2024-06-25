@@ -3,8 +3,10 @@ use std::cmp::{
 	Ordering,
 };
 
-use bit_string::BitString;
-use fixed_bit_string::FixedBitString;
+use crate::{
+	bit_string::BitString,
+	fixed_bit_string::FixedBitString,
+};
 
 /// Extend a
 /// [`FixedBitString`](fixed_bit_string/trait.FixedBitString.html) to a
@@ -14,7 +16,7 @@ use fixed_bit_string::FixedBitString;
 // TODO: drop the PartialEq + Eq manual implementations; instead require
 // the underyling type to implement sane semantics (i.e. not contain any
 // data outside what is accessible through "FixedBitString")
-#[allow(clippy::derive_hash_xor_eq)]
+#[allow(clippy::derived_hash_with_manual_eq)]
 pub struct BitLengthString<W: FixedBitString> {
 	/// underlying bit string with fixed length
 	bits: W,

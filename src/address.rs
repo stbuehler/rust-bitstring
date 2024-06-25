@@ -3,8 +3,10 @@ use std::net::{
 	Ipv6Addr,
 };
 
-use fixed_bit_string::FixedBitString;
-use utils::BigEndianBitString;
+use crate::{
+	fixed_bit_string::FixedBitString,
+	utils::BigEndianBitString,
+};
 
 fn with_ipv4_mut_slice<F, T>(addr: &mut Ipv4Addr, f: F) -> T
 where

@@ -1,4 +1,4 @@
-use fixed_bit_string::FixedBitString;
+use crate::fixed_bit_string::FixedBitString;
 
 /// Iterator to iterate over all
 /// [`FixedBitString`](trait.FixedBitString.html) values with a shared

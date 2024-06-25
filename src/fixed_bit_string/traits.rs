@@ -1,6 +1,6 @@
 use std::cmp::min;
 
-use fixed_bit_string::Iter;
+use crate::fixed_bit_string::Iter;
 
 /// A bit string with fixed length.
 ///

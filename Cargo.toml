@@ -2,7 +2,8 @@
 name = "bitstring"
 # also bump version in html_root_url in src/lib.rs
 version = "0.1.2"
-authors = ["Stefan Bühler <stbuehler@web.de>"]
+authors = ["Stefan Bühler <source@stbuehler.de>"]
+edition = "2021"
 description = "Bitstring traits and implementations"
 documentation = "https://docs.rs/bitstring"
 homepage = "https://github.com/stbuehler/rust-bitstring"
