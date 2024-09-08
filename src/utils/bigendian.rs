@@ -293,6 +293,7 @@ impl_big_endian_for! {u8}
 impl_big_endian_for! {u16}
 impl_big_endian_for! {u32}
 impl_big_endian_for! {u64}
+impl_big_endian_for! {u128}
 
 #[cfg(test)]
 mod tests {
