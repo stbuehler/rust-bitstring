@@ -3,8 +3,7 @@ use std::{
 	mem::size_of,
 };
 
-/// Generic helper methods to treat [u*]-slices as big endian bit
-/// strings.
+/// Generic helper methods to treat unsigned integer `u*`-slices as big endian bit strings.
 pub trait BigEndianBitString: Sized {
 	/// bits in a single element
 	fn elembits() -> usize {
