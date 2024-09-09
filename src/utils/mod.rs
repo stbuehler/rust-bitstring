@@ -3,3 +3,6 @@
 pub use self::bigendian::*;
 
 mod bigendian;
+
+#[cfg(test)]
+mod bigendian_tests;
