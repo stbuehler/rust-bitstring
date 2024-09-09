@@ -20,7 +20,7 @@ where
 
 impl FixedBitString for Ipv4Addr {
 	fn inc(&mut self, prefix: usize) -> bool {
-		with_ipv4_mut_slice(self, |slice| BigEndianBitString::inc(slice, prefix))
+		with_ipv4_mut_slice(self, |slice| BigEndianBitString::bits_inc(slice, prefix))
 	}
 
 	fn len() -> usize {
@@ -28,19 +28,19 @@ impl FixedBitString for Ipv4Addr {
 	}
 
 	fn get(&self, ndx: usize) -> bool {
-		BigEndianBitString::get(&self.octets(), ndx)
+		BigEndianBitString::bit_get(&self.octets()[..], ndx)
 	}
 
 	fn set(&mut self, ndx: usize, bit: bool) {
-		with_ipv4_mut_slice(self, |slice| BigEndianBitString::set(slice, ndx, bit))
+		with_ipv4_mut_slice(self, |slice| BigEndianBitString::bit_set(slice, ndx, bit))
 	}
 
 	fn flip(&mut self, ndx: usize) {
-		with_ipv4_mut_slice(self, |slice| BigEndianBitString::flip(slice, ndx))
+		with_ipv4_mut_slice(self, |slice| BigEndianBitString::bit_flip(slice, ndx))
 	}
 
 	fn shared_prefix_len(&self, other: &Self, max_len: usize) -> usize {
-		BigEndianBitString::shared_prefix_len(&self.octets(), &other.octets(), max_len)
+		BigEndianBitString::shared_prefix_len(&self.octets()[..], &other.octets()[..], max_len)
 	}
 
 	fn set_false_from(&mut self, ndx: usize) {
@@ -48,7 +48,7 @@ impl FixedBitString for Ipv4Addr {
 	}
 
 	fn is_false_from(&self, ndx: usize) -> bool {
-		BigEndianBitString::is_false_from(&self.octets(), ndx)
+		BigEndianBitString::is_false_from(&self.octets()[..], ndx)
 	}
 
 	fn set_true_from(&mut self, ndx: usize) {
@@ -56,7 +56,7 @@ impl FixedBitString for Ipv4Addr {
 	}
 
 	fn is_true_from(&self, ndx: usize) -> bool {
-		BigEndianBitString::is_true_from(&self.octets(), ndx)
+		BigEndianBitString::is_true_from(&self.octets()[..], ndx)
 	}
 
 	fn new_all_false() -> Self {
@@ -68,7 +68,7 @@ impl FixedBitString for Ipv4Addr {
 	}
 
 	fn contains(&self, prefix: usize, other: &Self) -> bool {
-		BigEndianBitString::contains(&self.octets(), prefix, &other.octets())
+		BigEndianBitString::bits_prefix_of(&self.octets()[..], prefix, &other.octets()[..])
 	}
 }
 
@@ -84,7 +84,7 @@ where
 
 impl FixedBitString for Ipv6Addr {
 	fn inc(&mut self, prefix: usize) -> bool {
-		with_ipv6_mut_slice(self, |slice| BigEndianBitString::inc(slice, prefix))
+		with_ipv6_mut_slice(self, |slice| BigEndianBitString::bits_inc(slice, prefix))
 	}
 
 	fn len() -> usize {
@@ -92,19 +92,19 @@ impl FixedBitString for Ipv6Addr {
 	}
 
 	fn get(&self, ndx: usize) -> bool {
-		BigEndianBitString::get(&self.octets(), ndx)
+		BigEndianBitString::bit_get(&self.octets()[..], ndx)
 	}
 
 	fn set(&mut self, ndx: usize, bit: bool) {
-		with_ipv6_mut_slice(self, |slice| BigEndianBitString::set(slice, ndx, bit))
+		with_ipv6_mut_slice(self, |slice| BigEndianBitString::bit_set(slice, ndx, bit))
 	}
 
 	fn flip(&mut self, ndx: usize) {
-		with_ipv6_mut_slice(self, |slice| BigEndianBitString::flip(slice, ndx))
+		with_ipv6_mut_slice(self, |slice| BigEndianBitString::bit_flip(slice, ndx))
 	}
 
 	fn shared_prefix_len(&self, other: &Self, max_len: usize) -> usize {
-		BigEndianBitString::shared_prefix_len(&self.octets(), &other.octets(), max_len)
+		BigEndianBitString::shared_prefix_len(&self.octets()[..], &other.octets()[..], max_len)
 	}
 
 	fn set_false_from(&mut self, ndx: usize) {
@@ -112,7 +112,7 @@ impl FixedBitString for Ipv6Addr {
 	}
 
 	fn is_false_from(&self, ndx: usize) -> bool {
-		BigEndianBitString::is_false_from(&self.octets(), ndx)
+		BigEndianBitString::is_false_from(&self.octets()[..], ndx)
 	}
 
 	fn set_true_from(&mut self, ndx: usize) {
@@ -120,7 +120,7 @@ impl FixedBitString for Ipv6Addr {
 	}
 
 	fn is_true_from(&self, ndx: usize) -> bool {
-		BigEndianBitString::is_true_from(&self.octets(), ndx)
+		BigEndianBitString::is_true_from(&self.octets()[..], ndx)
 	}
 
 	fn new_all_false() -> Self {
@@ -132,6 +132,6 @@ impl FixedBitString for Ipv6Addr {
 	}
 
 	fn contains(&self, prefix: usize, other: &Self) -> bool {
-		BigEndianBitString::contains(&self.octets(), prefix, &other.octets())
+		BigEndianBitString::bits_prefix_of(&self.octets()[..], prefix, &other.octets()[..])
 	}
 }

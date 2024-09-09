@@ -1,67 +1,63 @@
-/// Generic helper methods to treat unsigned integer `u*`-slices as big endian bit strings.
-pub trait BigEndianBitString: Sized {
-	/// bits in a single element
-	const ELEMENT_BITS: usize;
-
-	/// integer with single bit set. bit 0 is the highest bit (big
-	/// endian).  Wraps at `Self::ELEMENT_BITS()`.
-	fn mask(ndx: usize) -> Self;
+/// Generic helper methods to treat unsigned integer and slices of them as big endian bit strings.
+pub trait BigEndianBitString {
+	/// maximum number of bits in storage
+	fn bits(&self) -> usize;
 
 	/// increment from right; don't touch first `prefix` bits; returns
 	/// true on overflow
 	///
 	/// # Panics
 	///
-	/// Panics if `prefix > Self::ELEMENT_BITS() * slice.len()`.
-	fn inc(slice: &mut [Self], prefix: usize) -> bool;
+	/// Panics if `prefix > self.bits()`.
+	fn bits_inc(&mut self, prefix: usize) -> bool;
 
 	/// Get the `ndx`th bit.
 	///
 	/// # Panics
 	///
 	/// Panics if `ndx >= Self::ELEMENT_BITS() * slice.len()`.
-	fn get(slice: &[Self], ndx: usize) -> bool;
+	fn bit_get(&self, ndx: usize) -> bool;
 
 	/// Set the `ndx`th bit to `bit`.
 	///
 	/// # Panics
 	///
 	/// Panics if `ndx >= Self::ELEMENT_BITS() * slice.len()`.
-	fn set(slice: &mut [Self], ndx: usize, bit: bool);
+	fn bit_set(&mut self, ndx: usize, bit: bool);
 
 	/// Flips the `ndx`th bit.
 	///
 	/// # Panics
 	///
 	/// Panics if `ndx >= Self::ELEMENT_BITS() * slice.len()`.
-	fn flip(slice: &mut [Self], ndx: usize);
+	fn bit_flip(&mut self, ndx: usize);
 
 	/// Length of the longest shared prefix of two bit strings.
-	fn shared_prefix_len(slice: &[Self], other: &[Self], max_len: usize) -> usize;
+	fn shared_prefix_len(&self, other: &Self, max_len: usize) -> usize;
 
 	/// Set all bits from [ndx..] to `false` (`0`).
 	///
 	/// Doesn't do anything if `ndx >= Self::ELEMENT_BITS() * slice.len()`.
-	fn set_false_from(slice: &mut [Self], ndx: usize);
+	fn set_false_from(&mut self, ndx: usize);
 
 	/// Whether all bits from [ndx..] are `false` (`0`).
 	///
 	/// Returns `true` if `ndx >= Self::ELEMENT_BITS() * slice.len()`.
-	fn is_false_from(slice: &[Self], ndx: usize) -> bool;
+	fn is_false_from(&self, ndx: usize) -> bool;
 
 	/// Set all bits from [ndx..] to `true` (`1`).
 	///
 	/// Doesn't do anything if `ndx >= Self::ELEMENT_BITS() * slice.len()`.
-	fn set_true_from(slice: &mut [Self], ndx: usize);
+	fn set_true_from(&mut self, ndx: usize);
 
 	/// Whether all bits from [ndx..] are `true` (`1`).
 	///
 	/// Returns `true` if `ndx >= Self::ELEMENT_BITS() * slice.len()`.
-	fn is_true_from(slice: &[Self], ndx: usize) -> bool;
+	fn is_true_from(&self, ndx: usize) -> bool;
 
-	/// check whether another bit string `other` shares the first
-	/// `prefix` bits with `self`
-	fn contains(slice: &[Self], prefix: usize, other: &[Self]) -> bool;
+	/// check whether another bit string `value` shares the first
+	/// `prefix_len` bits with `self`
+	fn bits_prefix_of(&self, prefix_len: usize, value: &Self) -> bool;
 }
 
 macro_rules! impl_big_endian_for {
@@ -371,50 +367,96 @@ macro_rules! impl_big_endian_for {
 		}
 
 		impl BigEndianBitString for $t {
-			const ELEMENT_BITS: usize = $mod::ELEMENT_BITS;
-
-			fn mask(ndx: usize) -> Self {
-				$mod::mask(ndx)
+			fn bits(&self) -> usize {
+				$mod::ELEMENT_BITS
 			}
 
-			fn inc(slice: &mut [Self], prefix: usize) -> bool {
-				$mod::slice_inc(slice, prefix)
+			fn bits_inc(&mut self, prefix: usize) -> bool {
+				let overflow;
+				(*self, overflow) = $mod::element_inc(*self, prefix);
+				overflow
 			}
 
-			fn get(slice: &[Self], ndx: usize) -> bool {
-				$mod::slice_get(slice, ndx)
+			fn bit_get(&self, ndx: usize) -> bool {
+				$mod::element_get(*self, ndx)
 			}
 
-			fn set(slice: &mut [Self], ndx: usize, bit: bool) {
-				$mod::slice_set(slice, ndx, bit)
+			fn bit_set(&mut self, ndx: usize, bit: bool) {
+				*self = $mod::element_set(*self, ndx, bit)
 			}
 
-			fn flip(slice: &mut [Self], ndx: usize) {
-				$mod::slice_flip(slice, ndx)
+			fn bit_flip(&mut self, ndx: usize) {
+				*self = $mod::element_flip(*self, ndx)
 			}
 
-			fn shared_prefix_len(slice: &[Self], other: &[Self], max_len: usize) -> usize {
-				$mod::slice_shared_prefix_len(slice, other, max_len)
+			fn shared_prefix_len(&self, other: &Self, max_len: usize) -> usize {
+				$mod::element_shared_prefix_len(*self, *other, max_len)
 			}
 
-			fn set_false_from(slice: &mut [Self], ndx: usize) {
-				$mod::slice_set_false_from(slice, ndx)
+			fn set_false_from(&mut self, ndx: usize) {
+				*self = $mod::element_set_false_from(*self, ndx);
 			}
 
-			fn is_false_from(slice: &[Self], ndx: usize) -> bool {
-				$mod::slice_is_false_from(slice, ndx)
+			fn is_false_from(&self, ndx: usize) -> bool {
+				$mod::element_is_false_from(*self, ndx)
 			}
 
-			fn set_true_from(slice: &mut [Self], ndx: usize) {
-				$mod::slice_set_true_from(slice, ndx)
+			fn set_true_from(&mut self, ndx: usize) {
+				*self = $mod::element_set_true_from(*self, ndx);
 			}
 
-			fn is_true_from(slice: &[Self], ndx: usize) -> bool {
-				$mod::slice_is_true_from(slice, ndx)
+			fn is_true_from(&self, ndx: usize) -> bool {
+				$mod::element_is_true_from(*self, ndx)
 			}
 
-			fn contains(slice: &[Self], prefix: usize, other: &[Self]) -> bool {
-				$mod::slice_contains(slice, prefix, other)
+			fn bits_prefix_of(&self, prefix: usize, other: &Self) -> bool {
+				$mod::element_contains(*self, prefix, *other)
+			}
+		}
+
+		impl BigEndianBitString for [$t] {
+			fn bits(&self) -> usize {
+				self.len() * $mod::ELEMENT_BITS
+			}
+
+			fn bits_inc(&mut self, prefix: usize) -> bool {
+				$mod::slice_inc(self, prefix)
+			}
+
+			fn bit_get(&self, ndx: usize) -> bool {
+				$mod::slice_get(self, ndx)
+			}
+
+			fn bit_set(&mut self, ndx: usize, bit: bool) {
+				$mod::slice_set(self, ndx, bit)
+			}
+
+			fn bit_flip(&mut self, ndx: usize) {
+				$mod::slice_flip(self, ndx)
+			}
+
+			fn shared_prefix_len(&self, other: &Self, max_len: usize) -> usize {
+				$mod::slice_shared_prefix_len(self, other, max_len)
+			}
+
+			fn set_false_from(&mut self, ndx: usize) {
+				$mod::slice_set_false_from(self, ndx)
+			}
+
+			fn is_false_from(&self, ndx: usize) -> bool {
+				$mod::slice_is_false_from(self, ndx)
+			}
+
+			fn set_true_from(&mut self, ndx: usize) {
+				$mod::slice_set_true_from(self, ndx)
+			}
+
+			fn is_true_from(&self, ndx: usize) -> bool {
+				$mod::slice_is_true_from(self, ndx)
+			}
+
+			fn bits_prefix_of(&self, prefix: usize, other: &Self) -> bool {
+				$mod::slice_contains(self, prefix, other)
 			}
 		}
 	};
