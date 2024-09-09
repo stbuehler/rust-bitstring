@@ -35,14 +35,6 @@ impl FixedBitString for Ipv4Addr {
 		with_ipv4_mut_slice(self, |slice| BigEndianBitString::set(slice, ndx, bit))
 	}
 
-	fn on(&mut self, ndx: usize) {
-		with_ipv4_mut_slice(self, |slice| BigEndianBitString::on(slice, ndx))
-	}
-
-	fn off(&mut self, ndx: usize) {
-		with_ipv4_mut_slice(self, |slice| BigEndianBitString::off(slice, ndx))
-	}
-
 	fn flip(&mut self, ndx: usize) {
 		with_ipv4_mut_slice(self, |slice| BigEndianBitString::flip(slice, ndx))
 	}
@@ -105,14 +97,6 @@ impl FixedBitString for Ipv6Addr {
 
 	fn set(&mut self, ndx: usize, bit: bool) {
 		with_ipv6_mut_slice(self, |slice| BigEndianBitString::set(slice, ndx, bit))
-	}
-
-	fn on(&mut self, ndx: usize) {
-		with_ipv6_mut_slice(self, |slice| BigEndianBitString::on(slice, ndx))
-	}
-
-	fn off(&mut self, ndx: usize) {
-		with_ipv6_mut_slice(self, |slice| BigEndianBitString::off(slice, ndx))
 	}
 
 	fn flip(&mut self, ndx: usize) {

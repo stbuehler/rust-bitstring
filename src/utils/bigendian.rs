@@ -29,20 +29,6 @@ pub trait BigEndianBitString: Sized {
 	/// Panics if `ndx >= Self::ELEMENT_BITS() * slice.len()`.
 	fn set(slice: &mut [Self], ndx: usize, bit: bool);
 
-	/// Set the `ndx`th bit to `true`.
-	///
-	/// # Panics
-	///
-	/// Panics if `ndx >= Self::ELEMENT_BITS() * slice.len()`.
-	fn on(slice: &mut [Self], ndx: usize);
-
-	/// Set the `ndx`th bit to `false`.
-	///
-	/// # Panics
-	///
-	/// Panics if `ndx >= Self::ELEMENT_BITS() * slice.len()`.
-	fn off(slice: &mut [Self], ndx: usize);
-
 	/// Flips the `ndx`th bit.
 	///
 	/// # Panics
@@ -171,33 +157,13 @@ macro_rules! impl_big_endian_for {
 			///
 			/// Panics if `ndx >= ELEMENT_BITS * slice.len()`.
 			pub fn set(slice: &mut [$t], ndx: usize, bit: bool) {
+				let mask = mask(ndx);
+				let slice_ndx = ndx / ELEMENT_BITS;
 				if bit {
-					on(slice, ndx)
+					slice[slice_ndx] |= mask;
 				} else {
-					off(slice, ndx)
+					slice[slice_ndx] &= !mask;
 				}
-			}
-
-			/// Set the `ndx`th bit to `true`.
-			///
-			/// # Panics
-			///
-			/// Panics if `ndx >= ELEMENT_BITS * slice.len()`.
-			pub fn on(slice: &mut [$t], ndx: usize) {
-				let mask = mask(ndx);
-				let slice_ndx = ndx / ELEMENT_BITS;
-				slice[slice_ndx] |= mask;
-			}
-
-			/// Set the `ndx`th bit to `false`.
-			///
-			/// # Panics
-			///
-			/// Panics if `ndx >= ELEMENT_BITS * slice.len()`.
-			pub fn off(slice: &mut [$t], ndx: usize) {
-				let mask = mask(ndx);
-				let slice_ndx = ndx / ELEMENT_BITS;
-				slice[slice_ndx] &= !mask;
 			}
 
 			/// Flips the `ndx`th bit.
@@ -355,14 +321,6 @@ macro_rules! impl_big_endian_for {
 
 			fn set(slice: &mut [Self], ndx: usize, bit: bool) {
 				$mod::set(slice, ndx, bit)
-			}
-
-			fn on(slice: &mut [Self], ndx: usize) {
-				$mod::on(slice, ndx)
-			}
-
-			fn off(slice: &mut [Self], ndx: usize) {
-				$mod::off(slice, ndx)
 			}
 
 			fn flip(slice: &mut [Self], ndx: usize) {

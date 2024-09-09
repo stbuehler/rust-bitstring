@@ -53,24 +53,6 @@ pub trait FixedBitString {
 	/// Should panic if `ndx >= self.len()`.
 	fn set(&mut self, ndx: usize, bit: bool);
 
-	/// Set the `ndx`th bit to `true`.
-	///
-	/// # Panics
-	///
-	/// Should panic if `ndx >= self.len()`.
-	fn on(&mut self, ndx: usize) {
-		self.set(ndx, true);
-	}
-
-	/// Set the `ndx`th bit to `false`.
-	///
-	/// # Panics
-	///
-	/// Should panic if `ndx >= self.len()`.
-	fn off(&mut self, ndx: usize) {
-		self.set(ndx, false);
-	}
-
 	/// Flips the `ndx`th bit.
 	///
 	/// # Panics
