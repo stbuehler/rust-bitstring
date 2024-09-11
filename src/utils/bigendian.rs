@@ -64,7 +64,7 @@ macro_rules! impl_big_endian_for {
 	($mod:ident => $t:ty) => {
 		/// `BigEndianBitString` functions for specific integer type
 		pub mod $mod {
-			use std::{
+			use core::{
 				cmp::min,
 				mem::size_of,
 			};
