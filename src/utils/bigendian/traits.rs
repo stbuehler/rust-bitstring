@@ -1,4 +1,5 @@
 /// Generic helper methods to treat unsigned integer and slices of them as big endian bit strings.
+#[allow(dead_code)]
 pub trait BigEndianBitString {
 	/// maximum number of bits in storage
 	fn bits(&self) -> usize;

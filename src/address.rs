@@ -4,8 +4,12 @@ use core::net::{
 };
 
 use crate::{
+	utils::bigendian::int_helpers::{
+		u128,
+		u32,
+		u8,
+	},
 	FixedBitString,
-	utils::bigendian::{u8, u32, u128},
 };
 
 fn with_ipv4_mut_slice<F, T>(addr: &mut Ipv4Addr, f: F) -> T

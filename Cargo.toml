@@ -17,4 +17,14 @@ exclude = ["CHECKLIST.md"]
 [badges]
 appveyor = { repository = "stbuehler/rust-bitstring" }
 
+[features]
+fixed = []
+bigendian = []
+net = ["fixed"]
+
+default = []
+
 [dependencies]
+
+[package.metadata.docs.rs]
+all-features = true

@@ -174,7 +174,7 @@ jobs:
         uses: actions-rs/cargo@v1
         env:
           # this should need nightly
-          RUSTDOCFLAGS: "--cfg doc_cfg"
+          RUSTDOCFLAGS: "--cfg docsrs"
         with:
           command: doc
           args: --all-features

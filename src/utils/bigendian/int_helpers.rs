@@ -1,6 +1,7 @@
 macro_rules! impl_big_endian_for {
 	($mod:ident => $t:ty) => {
 		/// `BigEndianBitString` functions for specific integer type
+		#[cfg_attr(not(feature = "bigendian"), allow(dead_code))] // lots of unused parts unless we export it
 		pub mod $mod {
 			use core::cmp::min;
 
