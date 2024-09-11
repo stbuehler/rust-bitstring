@@ -4,7 +4,7 @@ use core::net::{
 };
 
 use crate::{
-	fixed_bit_string::FixedBitString,
+	FixedBitString,
 	utils::BigEndianBitString,
 };
 

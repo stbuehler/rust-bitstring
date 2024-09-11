@@ -5,7 +5,7 @@ use core::cmp::{
 
 use crate::{
 	bit_string::BitString,
-	fixed_bit_string::FixedBitString,
+	FixedBitString,
 };
 
 /// Extend a

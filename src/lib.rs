@@ -8,7 +8,7 @@ pub use self::bit_length_string::*;
 // re-export. sadly duplicates the doc pages...
 pub use self::{
 	bit_string::BitString,
-	fixed_bit_string::FixedBitString,
+	fixed_bit_string::traits::FixedBitString,
 };
 
 mod address;

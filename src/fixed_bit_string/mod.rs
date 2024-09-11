@@ -1,9 +1,6 @@
-//! contains everything related to the `FixedBitString` trait.
+//! contains extra types related to the `FixedBitString` trait.
 
-pub use self::{
-	iter::*,
-	traits::*,
-};
+pub use self::iter::Iter;
 
 mod iter;
-mod traits;
+pub(crate) mod traits;
