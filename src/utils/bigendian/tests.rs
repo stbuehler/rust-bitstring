@@ -1,4 +1,4 @@
-use super::bigendian::u8;
+use super::int_helpers::u8;
 
 fn u8_slice_inc<S: AsMut<[u8]>>(mut slice: S, prefix: usize) -> (bool, S) {
 	let overflow = u8::slice_inc(slice.as_mut(), prefix);
