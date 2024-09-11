@@ -20,8 +20,13 @@ use std::cmp::{
 ///
 /// Apart from this special case writing a bit must not modify any other
 /// bits or change the length.
+///
+/// The required `Eq` implementation must match comparing two bitstrings
+/// by their bits (up to their length); i.e. `BitString`s must not carry
+/// additional data apart from the bits (and mustn't compare unused
+/// bits in the storage if their value isn't fixed).
 #[allow(clippy::len_without_is_empty)]
-pub trait BitString {
+pub trait BitString: Eq {
 	/// Get the `ndx`th bit.
 	///
 	/// # Panics
