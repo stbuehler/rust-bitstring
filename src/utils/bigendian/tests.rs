@@ -27,48 +27,48 @@ fn u8_slice_set_true_from<S: AsMut<[u8]>>(mut slice: S, ndx: usize) -> S {
 
 #[test]
 fn test_u8_element_inc() {
-	assert_eq!(u8::element_inc(0b0000_0000, 0), (0b0000_0001, false));
-	assert_eq!(u8::element_inc(0b0000_0000, 4), (0b0000_0001, false));
-	assert_eq!(u8::element_inc(0b0000_0000, 8), (0b0000_0000, true));
-	assert_eq!(u8::element_inc(0b0000_1000, 0), (0b0000_1001, false));
-	assert_eq!(u8::element_inc(0b0000_1000, 4), (0b0000_1001, false));
-	assert_eq!(u8::element_inc(0b0000_1000, 8), (0b0000_1000, true));
-	assert_eq!(u8::element_inc(0b0000_1111, 0), (0b0001_0000, false));
-	assert_eq!(u8::element_inc(0b0000_1111, 4), (0b0000_0000, true));
-	assert_eq!(u8::element_inc(0b0000_1111, 8), (0b0000_1111, true));
-	assert_eq!(u8::element_inc(0b0001_1111, 0), (0b0010_0000, false));
-	assert_eq!(u8::element_inc(0b0001_1111, 4), (0b0001_0000, true));
-	assert_eq!(u8::element_inc(0b0001_1111, 8), (0b0001_1111, true));
-	assert_eq!(u8::element_inc(0b1111_1111, 0), (0b0000_0000, true));
-	assert_eq!(u8::element_inc(0b1111_1111, 4), (0b1111_0000, true));
-	assert_eq!(u8::element_inc(0b1111_1111, 8), (0b1111_1111, true));
+	assert_eq!(u8::make_element_inc(0b0000_0000, 0), (0b0000_0001, false));
+	assert_eq!(u8::make_element_inc(0b0000_0000, 4), (0b0000_0001, false));
+	assert_eq!(u8::make_element_inc(0b0000_0000, 8), (0b0000_0000, true));
+	assert_eq!(u8::make_element_inc(0b0000_1000, 0), (0b0000_1001, false));
+	assert_eq!(u8::make_element_inc(0b0000_1000, 4), (0b0000_1001, false));
+	assert_eq!(u8::make_element_inc(0b0000_1000, 8), (0b0000_1000, true));
+	assert_eq!(u8::make_element_inc(0b0000_1111, 0), (0b0001_0000, false));
+	assert_eq!(u8::make_element_inc(0b0000_1111, 4), (0b0000_0000, true));
+	assert_eq!(u8::make_element_inc(0b0000_1111, 8), (0b0000_1111, true));
+	assert_eq!(u8::make_element_inc(0b0001_1111, 0), (0b0010_0000, false));
+	assert_eq!(u8::make_element_inc(0b0001_1111, 4), (0b0001_0000, true));
+	assert_eq!(u8::make_element_inc(0b0001_1111, 8), (0b0001_1111, true));
+	assert_eq!(u8::make_element_inc(0b1111_1111, 0), (0b0000_0000, true));
+	assert_eq!(u8::make_element_inc(0b1111_1111, 4), (0b1111_0000, true));
+	assert_eq!(u8::make_element_inc(0b1111_1111, 8), (0b1111_1111, true));
 }
 
 #[test]
 fn test_u8_element_set() {
-	assert_eq!(u8::element_set(0b0000_0000, 0, true), 0b1000_0000);
-	assert_eq!(u8::element_set(0b1000_0000, 0, true), 0b1000_0000);
-	assert_eq!(u8::element_set(0b0000_0000, 4, true), 0b0000_1000);
-	assert_eq!(u8::element_set(0b0000_1000, 4, true), 0b0000_1000);
-	assert_eq!(u8::element_set(0b0000_0000, 7, true), 0b0000_0001);
-	assert_eq!(u8::element_set(0b0000_0001, 7, true), 0b0000_0001);
+	assert_eq!(u8::make_element_set(0b0000_0000, 0, true), 0b1000_0000);
+	assert_eq!(u8::make_element_set(0b1000_0000, 0, true), 0b1000_0000);
+	assert_eq!(u8::make_element_set(0b0000_0000, 4, true), 0b0000_1000);
+	assert_eq!(u8::make_element_set(0b0000_1000, 4, true), 0b0000_1000);
+	assert_eq!(u8::make_element_set(0b0000_0000, 7, true), 0b0000_0001);
+	assert_eq!(u8::make_element_set(0b0000_0001, 7, true), 0b0000_0001);
 
-	assert_eq!(u8::element_set(0b1000_0000, 0, false), 0b0000_0000);
-	assert_eq!(u8::element_set(0b0000_0000, 0, false), 0b0000_0000);
-	assert_eq!(u8::element_set(0b0000_1000, 4, false), 0b0000_0000);
-	assert_eq!(u8::element_set(0b0000_0000, 4, false), 0b0000_0000);
-	assert_eq!(u8::element_set(0b0000_0001, 7, false), 0b0000_0000);
-	assert_eq!(u8::element_set(0b0000_0000, 7, false), 0b0000_0000);
+	assert_eq!(u8::make_element_set(0b1000_0000, 0, false), 0b0000_0000);
+	assert_eq!(u8::make_element_set(0b0000_0000, 0, false), 0b0000_0000);
+	assert_eq!(u8::make_element_set(0b0000_1000, 4, false), 0b0000_0000);
+	assert_eq!(u8::make_element_set(0b0000_0000, 4, false), 0b0000_0000);
+	assert_eq!(u8::make_element_set(0b0000_0001, 7, false), 0b0000_0000);
+	assert_eq!(u8::make_element_set(0b0000_0000, 7, false), 0b0000_0000);
 }
 
 #[test]
 fn test_u8_element_flip() {
-	assert_eq!(u8::element_flip(0b0000_0000, 0), 0b1000_0000);
-	assert_eq!(u8::element_flip(0b1000_0000, 0), 0b0000_0000);
-	assert_eq!(u8::element_flip(0b0000_0000, 4), 0b0000_1000);
-	assert_eq!(u8::element_flip(0b0000_1000, 4), 0b0000_0000);
-	assert_eq!(u8::element_flip(0b0000_0000, 7), 0b0000_0001);
-	assert_eq!(u8::element_flip(0b0000_0001, 7), 0b0000_0000);
+	assert_eq!(u8::make_element_flip(0b0000_0000, 0), 0b1000_0000);
+	assert_eq!(u8::make_element_flip(0b1000_0000, 0), 0b0000_0000);
+	assert_eq!(u8::make_element_flip(0b0000_0000, 4), 0b0000_1000);
+	assert_eq!(u8::make_element_flip(0b0000_1000, 4), 0b0000_0000);
+	assert_eq!(u8::make_element_flip(0b0000_0000, 7), 0b0000_0001);
+	assert_eq!(u8::make_element_flip(0b0000_0001, 7), 0b0000_0000);
 }
 
 #[test]
@@ -144,13 +144,13 @@ fn test_u8_element_is_false_from() {
 
 #[test]
 fn test_u8_element_set_false_from() {
-	assert_eq!(u8::element_set_false_from(0b0000_0000, 0), 0b0000_0000);
-	assert_eq!(u8::element_set_false_from(0b1111_1111, 0), 0b0000_0000);
-	assert_eq!(u8::element_set_false_from(0b1111_0000, 4), 0b1111_0000);
-	assert_eq!(u8::element_set_false_from(0b1111_1111, 4), 0b1111_0000);
-	assert_eq!(u8::element_set_false_from(0b0000_1111, 8), 0b0000_1111);
-	assert_eq!(u8::element_set_false_from(0b1111_0000, 8), 0b1111_0000);
-	assert_eq!(u8::element_set_false_from(0b1111_1111, 8), 0b1111_1111);
+	assert_eq!(u8::make_element_set_false_from(0b0000_0000, 0), 0b0000_0000);
+	assert_eq!(u8::make_element_set_false_from(0b1111_1111, 0), 0b0000_0000);
+	assert_eq!(u8::make_element_set_false_from(0b1111_0000, 4), 0b1111_0000);
+	assert_eq!(u8::make_element_set_false_from(0b1111_1111, 4), 0b1111_0000);
+	assert_eq!(u8::make_element_set_false_from(0b0000_1111, 8), 0b0000_1111);
+	assert_eq!(u8::make_element_set_false_from(0b1111_0000, 8), 0b1111_0000);
+	assert_eq!(u8::make_element_set_false_from(0b1111_1111, 8), 0b1111_1111);
 }
 
 #[test]
@@ -170,13 +170,13 @@ fn test_u8_element_is_true_from() {
 
 #[test]
 fn test_u8_element_set_true_from() {
-	assert_eq!(u8::element_set_true_from(0b0000_0000, 0), 0b1111_1111);
-	assert_eq!(u8::element_set_true_from(0b1111_1111, 0), 0b1111_1111);
-	assert_eq!(u8::element_set_true_from(0b0000_0000, 4), 0b0000_1111);
-	assert_eq!(u8::element_set_true_from(0b0000_1111, 4), 0b0000_1111);
-	assert_eq!(u8::element_set_true_from(0b0000_1111, 8), 0b0000_1111);
-	assert_eq!(u8::element_set_true_from(0b1111_0000, 8), 0b1111_0000);
-	assert_eq!(u8::element_set_true_from(0b0000_0000, 8), 0b0000_0000);
+	assert_eq!(u8::make_element_set_true_from(0b0000_0000, 0), 0b1111_1111);
+	assert_eq!(u8::make_element_set_true_from(0b1111_1111, 0), 0b1111_1111);
+	assert_eq!(u8::make_element_set_true_from(0b0000_0000, 4), 0b0000_1111);
+	assert_eq!(u8::make_element_set_true_from(0b0000_1111, 4), 0b0000_1111);
+	assert_eq!(u8::make_element_set_true_from(0b0000_1111, 8), 0b0000_1111);
+	assert_eq!(u8::make_element_set_true_from(0b1111_0000, 8), 0b1111_0000);
+	assert_eq!(u8::make_element_set_true_from(0b0000_0000, 8), 0b0000_0000);
 }
 
 #[test]

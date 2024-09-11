@@ -5,7 +5,7 @@ use core::net::{
 
 use crate::{
 	FixedBitString,
-	utils::BigEndianBitString,
+	utils::bigendian::{u8, u32, u128},
 };
 
 fn with_ipv4_mut_slice<F, T>(addr: &mut Ipv4Addr, f: F) -> T
@@ -30,7 +30,7 @@ where
 
 impl FixedBitString for Ipv4Addr {
 	fn inc(&mut self, prefix: usize) -> bool {
-		with_ipv4_mut_u32(self, |num| num.bits_inc(prefix))
+		with_ipv4_mut_u32(self, |num| u32::element_inc(num, prefix))
 	}
 
 	fn len() -> usize {
@@ -38,36 +38,35 @@ impl FixedBitString for Ipv4Addr {
 	}
 
 	fn get(&self, ndx: usize) -> bool {
-		self.octets().as_slice().bit_get(ndx)
+		u8::slice_get(&self.octets(), ndx)
 	}
 
 	fn set(&mut self, ndx: usize, bit: bool) {
-		with_ipv4_mut_slice(self, |slice| slice.bit_set(ndx, bit))
+		with_ipv4_mut_slice(self, |slice| u8::slice_set(slice, ndx, bit))
 	}
 
 	fn flip(&mut self, ndx: usize) {
-		with_ipv4_mut_slice(self, |slice| slice.bit_flip(ndx))
+		with_ipv4_mut_slice(self, |slice| u8::slice_flip(slice, ndx))
 	}
 
 	fn shared_prefix_len(&self, other: &Self) -> usize {
-		self.to_bits()
-			.shared_prefix_len(&other.to_bits(), Self::len())
+		u32::element_shared_prefix_len(self.to_bits(), other.to_bits(), Self::len())
 	}
 
 	fn set_false_from(&mut self, ndx: usize) {
-		with_ipv4_mut_u32(self, |num| num.set_false_from(ndx))
+		with_ipv4_mut_u32(self, |num| u32::element_set_false_from(num, ndx))
 	}
 
 	fn is_false_from(&self, ndx: usize) -> bool {
-		self.to_bits().is_false_from(ndx)
+		u32::element_is_false_from(self.to_bits(), ndx)
 	}
 
 	fn set_true_from(&mut self, ndx: usize) {
-		with_ipv4_mut_u32(self, |num| num.set_true_from(ndx))
+		with_ipv4_mut_u32(self, |num| u32::element_set_true_from(num, ndx))
 	}
 
 	fn is_true_from(&self, ndx: usize) -> bool {
-		self.to_bits().is_true_from(ndx)
+		u32::element_is_true_from(self.to_bits(), ndx)
 	}
 
 	fn new_all_false() -> Self {
@@ -79,7 +78,7 @@ impl FixedBitString for Ipv4Addr {
 	}
 
 	fn contains(&self, prefix: usize, other: &Self) -> bool {
-		self.to_bits().bits_prefix_of(prefix, &other.to_bits())
+		u32::element_contains(self.to_bits(), prefix, other.to_bits())
 	}
 }
 
@@ -105,7 +104,7 @@ where
 
 impl FixedBitString for Ipv6Addr {
 	fn inc(&mut self, prefix: usize) -> bool {
-		with_ipv6_mut_slice(self, |slice| slice.bits_inc(prefix))
+		with_ipv6_mut_u128(self, |num| u128::element_inc(num, prefix))
 	}
 
 	fn len() -> usize {
@@ -113,36 +112,35 @@ impl FixedBitString for Ipv6Addr {
 	}
 
 	fn get(&self, ndx: usize) -> bool {
-		self.octets().as_slice().bit_get(ndx)
+		u8::slice_get(&self.octets(), ndx)
 	}
 
 	fn set(&mut self, ndx: usize, bit: bool) {
-		with_ipv6_mut_slice(self, |slice| slice.bit_set(ndx, bit))
+		with_ipv6_mut_slice(self, |slice| u8::slice_set(slice, ndx, bit))
 	}
 
 	fn flip(&mut self, ndx: usize) {
-		with_ipv6_mut_slice(self, |slice| slice.bit_flip(ndx))
+		with_ipv6_mut_slice(self, |slice| u8::slice_flip(slice, ndx))
 	}
 
 	fn shared_prefix_len(&self, other: &Self) -> usize {
-		self.to_bits()
-			.shared_prefix_len(&other.to_bits(), Self::len())
+		u128::element_shared_prefix_len(self.to_bits(), other.to_bits(), Self::len())
 	}
 
 	fn set_false_from(&mut self, ndx: usize) {
-		with_ipv6_mut_u128(self, |num| num.set_false_from(ndx))
+		with_ipv6_mut_u128(self, |num| u128::element_set_false_from(num, ndx))
 	}
 
 	fn is_false_from(&self, ndx: usize) -> bool {
-		self.to_bits().is_false_from(ndx)
+		u128::element_is_false_from(self.to_bits(), ndx)
 	}
 
 	fn set_true_from(&mut self, ndx: usize) {
-		with_ipv6_mut_u128(self, |num| num.set_true_from(ndx))
+		with_ipv6_mut_u128(self, |num| u128::element_set_true_from(num, ndx))
 	}
 
 	fn is_true_from(&self, ndx: usize) -> bool {
-		self.to_bits().is_true_from(ndx)
+		u128::element_is_true_from(self.to_bits(), ndx)
 	}
 
 	fn new_all_false() -> Self {
@@ -154,6 +152,6 @@ impl FixedBitString for Ipv6Addr {
 	}
 
 	fn contains(&self, prefix: usize, other: &Self) -> bool {
-		self.to_bits().bits_prefix_of(prefix, &other.to_bits())
+		u128::element_contains(self.to_bits(), prefix, other.to_bits())
 	}
 }

@@ -30,7 +30,7 @@ macro_rules! impl_big_endian_for {
 			/// # Panics
 			///
 			/// Panics if `prefix > ELEMENT_BITS`.
-			pub const fn element_inc(value: $t, prefix: usize) -> ($t, bool) {
+			pub const fn make_element_inc(value: $t, prefix: usize) -> ($t, bool) {
 				assert!(prefix <= ELEMENT_BITS);
 				if prefix == ELEMENT_BITS {
 					return (value, true);
@@ -55,6 +55,18 @@ macro_rules! impl_big_endian_for {
 			///
 			/// # Panics
 			///
+			/// Panics if `prefix > ELEMENT_BITS`.
+			pub fn element_inc(value: &mut $t, prefix: usize) -> bool {
+				let overflow;
+				(*value, overflow) = make_element_inc(*value, prefix);
+				overflow
+			}
+
+			/// increment from right; don't touch first `prefix` bits; returns
+			/// true on overflow
+			///
+			/// # Panics
+			///
 			/// Panics if `prefix > ELEMENT_BITS * slice.len()`.
 			pub fn slice_inc(slice: &mut [$t], prefix: usize) -> bool {
 				let slice_ndx = prefix / ELEMENT_BITS;
@@ -72,9 +84,7 @@ macro_rules! impl_big_endian_for {
 					}
 				}
 
-				let overflow;
-				(slice[slice_ndx], overflow) = element_inc(slice[slice_ndx], element_ndx);
-				overflow
+				element_inc(&mut slice[slice_ndx], element_ndx)
 			}
 
 			/// Get the `ndx`th bit.
@@ -103,7 +113,7 @@ macro_rules! impl_big_endian_for {
 			/// # Panics
 			///
 			/// Panics if `ndx >= ELEMENT_BITS`.
-			pub const fn element_set(value: $t, ndx: usize, bit: bool) -> $t {
+			pub const fn make_element_set(value: $t, ndx: usize, bit: bool) -> $t {
 				assert!(ndx < ELEMENT_BITS);
 				let mask = mask(ndx);
 				if bit {
@@ -117,10 +127,19 @@ macro_rules! impl_big_endian_for {
 			///
 			/// # Panics
 			///
+			/// Panics if `ndx >= ELEMENT_BITS`.
+			pub fn element_set(value: &mut $t, ndx: usize, bit: bool) {
+				*value = make_element_set(*value, ndx, bit);
+			}
+
+			/// Set the `ndx`th bit to `bit`.
+			///
+			/// # Panics
+			///
 			/// Panics if `ndx >= ELEMENT_BITS * slice.len()`.
 			pub fn slice_set(slice: &mut [$t], ndx: usize, bit: bool) {
 				let slice_ndx = ndx / ELEMENT_BITS;
-				slice[slice_ndx] = element_set(slice[slice_ndx], ndx % ELEMENT_BITS, bit);
+				element_set(&mut slice[slice_ndx], ndx % ELEMENT_BITS, bit);
 			}
 
 			/// Flips the `ndx`th bit.
@@ -128,9 +147,18 @@ macro_rules! impl_big_endian_for {
 			/// # Panics
 			///
 			/// Panics if `ndx >= ELEMENT_BITS`.
-			pub const fn element_flip(value: $t, ndx: usize) -> $t {
+			pub const fn make_element_flip(value: $t, ndx: usize) -> $t {
 				assert!(ndx < ELEMENT_BITS);
 				value ^ mask(ndx)
+			}
+
+			/// Flips the `ndx`th bit.
+			///
+			/// # Panics
+			///
+			/// Panics if `ndx >= ELEMENT_BITS`.
+			pub fn element_flip(value: &mut $t, ndx: usize) {
+				*value = make_element_flip(*value, ndx);
 			}
 
 			/// Flips the `ndx`th bit.
@@ -140,7 +168,7 @@ macro_rules! impl_big_endian_for {
 			/// Panics if `ndx >= ELEMENT_BITS * slice.len()`.
 			pub fn slice_flip(slice: &mut [$t], ndx: usize) {
 				let slice_ndx = ndx / ELEMENT_BITS;
-				slice[slice_ndx] = element_flip(slice[slice_ndx], ndx % ELEMENT_BITS);
+				element_flip(&mut slice[slice_ndx], ndx % ELEMENT_BITS);
 			}
 
 			/// Length of the longest shared prefix of two bit strings.
@@ -176,11 +204,18 @@ macro_rules! impl_big_endian_for {
 			/// Set all bits from [ndx..] to `false` (`0`).
 			///
 			/// Doesn't do anything if `ndx >= ELEMENT_BITS`.
-			pub fn element_set_false_from(value: $t, ndx: usize) -> $t {
+			pub const fn make_element_set_false_from(value: $t, ndx: usize) -> $t {
 				if ndx >= ELEMENT_BITS {
 					return value;
 				}
 				value & !mask_suffix(ndx)
+			}
+
+			/// Set all bits from [ndx..] to `false` (`0`).
+			///
+			/// Doesn't do anything if `ndx >= ELEMENT_BITS`.
+			pub fn element_set_false_from(value: &mut $t, ndx: usize) {
+				*value = make_element_set_false_from(*value, ndx);
 			}
 
 			/// Set all bits from [ndx..] to `false` (`0`).
@@ -191,7 +226,7 @@ macro_rules! impl_big_endian_for {
 				if slice_ndx >= slice.len() {
 					return;
 				}
-				slice[slice_ndx] = element_set_false_from(slice[slice_ndx], ndx % ELEMENT_BITS);
+				element_set_false_from(&mut slice[slice_ndx], ndx % ELEMENT_BITS);
 				for i in slice_ndx + 1..slice.len() {
 					slice[i] = 0;
 				}
@@ -224,11 +259,18 @@ macro_rules! impl_big_endian_for {
 			/// Set all bits from [ndx..] to `true` (`1`).
 			///
 			/// Doesn't do anything if `ndx >= ELEMENT_BITS`.
-			pub fn element_set_true_from(value: $t, ndx: usize) -> $t {
+			pub const fn make_element_set_true_from(value: $t, ndx: usize) -> $t {
 				if ndx >= ELEMENT_BITS {
 					return value;
 				}
 				value | mask_suffix(ndx)
+			}
+
+			/// Set all bits from [ndx..] to `true` (`1`).
+			///
+			/// Doesn't do anything if `ndx >= ELEMENT_BITS`.
+			pub fn element_set_true_from(value: &mut $t, ndx: usize) {
+				*value = make_element_set_true_from(*value, ndx);
 			}
 
 			/// Set all bits from [ndx..] to `true` (`1`).
@@ -239,7 +281,7 @@ macro_rules! impl_big_endian_for {
 				if slice_ndx >= slice.len() {
 					return;
 				}
-				slice[slice_ndx] = element_set_true_from(slice[slice_ndx], ndx % ELEMENT_BITS);
+				element_set_true_from(&mut slice[slice_ndx], ndx % ELEMENT_BITS);
 				for i in slice_ndx + 1..slice.len() {
 					slice[i] = !0;
 				}

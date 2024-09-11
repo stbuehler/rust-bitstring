@@ -16,9 +16,7 @@ macro_rules! impl_big_endian_for {
 			}
 
 			fn bits_inc(&mut self, prefix: usize) -> bool {
-				let overflow;
-				(*self, overflow) = $mod::element_inc(*self, prefix);
-				overflow
+				$mod::element_inc(self, prefix)
 			}
 
 			fn bit_get(&self, ndx: usize) -> bool {
@@ -26,11 +24,11 @@ macro_rules! impl_big_endian_for {
 			}
 
 			fn bit_set(&mut self, ndx: usize, bit: bool) {
-				*self = $mod::element_set(*self, ndx, bit)
+				$mod::element_set(self, ndx, bit);
 			}
 
 			fn bit_flip(&mut self, ndx: usize) {
-				*self = $mod::element_flip(*self, ndx)
+				$mod::element_flip(self, ndx);
 			}
 
 			fn shared_prefix_len(&self, other: &Self, max_len: usize) -> usize {
@@ -38,7 +36,7 @@ macro_rules! impl_big_endian_for {
 			}
 
 			fn set_false_from(&mut self, ndx: usize) {
-				*self = $mod::element_set_false_from(*self, ndx);
+				$mod::element_set_false_from(self, ndx);
 			}
 
 			fn is_false_from(&self, ndx: usize) -> bool {
@@ -46,7 +44,7 @@ macro_rules! impl_big_endian_for {
 			}
 
 			fn set_true_from(&mut self, ndx: usize) {
-				*self = $mod::element_set_true_from(*self, ndx);
+				$mod::element_set_true_from(self, ndx);
 			}
 
 			fn is_true_from(&self, ndx: usize) -> bool {
