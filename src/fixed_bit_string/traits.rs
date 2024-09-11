@@ -1,5 +1,3 @@
-use std::cmp::min;
-
 use crate::fixed_bit_string::Iter;
 
 /// A bit string with fixed length.
@@ -64,8 +62,8 @@ pub trait FixedBitString {
 	}
 
 	/// Length of the longest shared prefix of two bit strings.
-	fn shared_prefix_len(&self, other: &Self, max_len: usize) -> usize {
-		let max_len = min(max_len, Self::len());
+	fn shared_prefix_len(&self, other: &Self) -> usize {
+		let max_len = Self::len();
 		for i in 0..max_len {
 			if self.get(i) != other.get(i) {
 				return i;

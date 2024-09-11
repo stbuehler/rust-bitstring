@@ -98,7 +98,7 @@ impl<W: FixedBitString> BitString for BitLengthString<W> {
 
 	fn shared_prefix_len(&self, other: &Self) -> usize {
 		let max_len = min(self.len, other.len);
-		W::shared_prefix_len(&self.bits, &other.bits, max_len)
+		min(W::shared_prefix_len(&self.bits, &other.bits), max_len)
 	}
 }
 

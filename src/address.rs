@@ -49,8 +49,9 @@ impl FixedBitString for Ipv4Addr {
 		with_ipv4_mut_slice(self, |slice| slice.bit_flip(ndx))
 	}
 
-	fn shared_prefix_len(&self, other: &Self, max_len: usize) -> usize {
-		self.to_bits().shared_prefix_len(&other.to_bits(), max_len)
+	fn shared_prefix_len(&self, other: &Self) -> usize {
+		self.to_bits()
+			.shared_prefix_len(&other.to_bits(), Self::len())
 	}
 
 	fn set_false_from(&mut self, ndx: usize) {
@@ -123,8 +124,9 @@ impl FixedBitString for Ipv6Addr {
 		with_ipv6_mut_slice(self, |slice| slice.bit_flip(ndx))
 	}
 
-	fn shared_prefix_len(&self, other: &Self, max_len: usize) -> usize {
-		self.to_bits().shared_prefix_len(&other.to_bits(), max_len)
+	fn shared_prefix_len(&self, other: &Self) -> usize {
+		self.to_bits()
+			.shared_prefix_len(&other.to_bits(), Self::len())
 	}
 
 	fn set_false_from(&mut self, ndx: usize) {
