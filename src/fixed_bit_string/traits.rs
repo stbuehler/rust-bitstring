@@ -100,5 +100,9 @@ pub trait FixedBitString {
 
 	/// check whether another bit string `other` shares the first
 	/// `prefix` bits with `self`
+	///
+	/// # Panics
+	///
+	/// Should panic if `prefix > self.len()`.
 	fn contains(&self, prefix: usize, other: &Self) -> bool;
 }
