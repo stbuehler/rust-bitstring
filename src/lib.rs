@@ -9,7 +9,7 @@
 //! [`Ipv4Addr`]: core::net::Ipv4Addr
 //! [`Ipv6Addr`]: core::net::Ipv6Addr
 #![warn(missing_docs)]
-#![doc(html_root_url = "https://docs.rs/bitstring/0.2.0-alpha1")]
+#![doc(html_root_url = "https://docs.rs/bitstring/0.2.0")]
 #![no_std]
 #![cfg_attr(docsrs, feature(doc_auto_cfg))]
 
