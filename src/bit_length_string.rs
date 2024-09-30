@@ -35,7 +35,7 @@ impl<W: FixedBitString> BitLengthString<W> {
 	///
 	/// Panics if `len > W::len()`.
 	pub fn new(mut bits: W, len: usize) -> Self {
-		assert!(len <= W::len());
+		assert!(len <= W::LEN);
 		bits.set_false_from(len);
 		BitLengthString { bits, len }
 	}
@@ -75,7 +75,7 @@ impl<W: FixedBitString> BitString for BitLengthString<W> {
 	}
 
 	fn len(&self) -> usize {
-		debug_assert!(self.len <= W::len());
+		debug_assert!(self.len <= W::LEN);
 		self.len
 	}
 

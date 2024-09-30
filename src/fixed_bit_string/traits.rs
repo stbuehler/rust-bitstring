@@ -5,6 +5,9 @@ use crate::fixed_bit_string::Iter;
 /// All bits must me mutable, and there must be no dependencies between
 /// bits (i.e. setting one bit must not change any other bit).
 pub trait FixedBitString {
+	/// Length of the bit string in bits.
+	const LEN: usize;
+
 	/// Treat bit string as integer, where bit 0 is the most significant
 	/// bit.
 	///
@@ -15,7 +18,7 @@ pub trait FixedBitString {
 	///
 	/// # Panics
 	///
-	/// Should panic if `prefix > self.len()`.
+	/// Should panic if `prefix > Self::LEN`.
 	fn inc(&mut self, prefix: usize) -> bool;
 
 	/// Iterate through all bit strings until `inc` overflows.
@@ -26,7 +29,7 @@ pub trait FixedBitString {
 	///
 	/// # Panics
 	///
-	/// Should panic if `prefix > self.len()`.
+	/// Should panic if `prefix > Self::LEN`.
 	fn iter(&self, prefix: usize) -> Iter<Self>
 	where
 		Self: Sized + Clone,
@@ -34,28 +37,25 @@ pub trait FixedBitString {
 		Iter::new(self.clone(), prefix)
 	}
 
-	/// Length of the bit string in bits.
-	fn len() -> usize;
-
 	/// Get the `ndx`th bit.
 	///
 	/// # Panics
 	///
-	/// Should panic if `ndx >= self.len()`.
+	/// Should panic if `ndx >= Self::LEN`.
 	fn get(&self, ndx: usize) -> bool;
 
 	/// Set the `ndx`th bit to `bit`.
 	///
 	/// # Panics
 	///
-	/// Should panic if `ndx >= self.len()`.
+	/// Should panic if `ndx >= Self::LEN`.
 	fn set(&mut self, ndx: usize, bit: bool);
 
 	/// Flips the `ndx`th bit.
 	///
 	/// # Panics
 	///
-	/// Should panic if `ndx >= self.len()`.
+	/// Should panic if `ndx >= Self::LEN`.
 	fn flip(&mut self, ndx: usize) {
 		let old_value = self.get(ndx);
 		self.set(ndx, !old_value);
@@ -63,7 +63,7 @@ pub trait FixedBitString {
 
 	/// Length of the longest shared prefix of two bit strings.
 	fn shared_prefix_len(&self, other: &Self) -> usize {
-		let max_len = Self::len();
+		let max_len = Self::LEN;
 		for i in 0..max_len {
 			if self.get(i) != other.get(i) {
 				return i;
@@ -74,22 +74,22 @@ pub trait FixedBitString {
 
 	/// Set all bits in [ndx..] to `false`.
 	///
-	/// Doesn't do anything if `ndx >= self.len()`.
+	/// Doesn't do anything if `ndx >= Self::LEN`.
 	fn set_false_from(&mut self, ndx: usize);
 
 	/// Whether all bits in [ndx..] are `false`.
 	///
-	/// Returns `true` if `ndx >= self.len()`.
+	/// Returns `true` if `ndx >= Self::LEN`.
 	fn is_false_from(&self, ndx: usize) -> bool;
 
 	/// Set all bits in [ndx..] to `true`.
 	///
-	/// Doesn't do anything if `ndx >= self.len()`.
+	/// Doesn't do anything if `ndx >= Self::LEN`.
 	fn set_true_from(&mut self, ndx: usize);
 
 	/// Whether all bits in [ndx..] are `true`.
 	///
-	/// Returns `true` if `ndx >= self.len()`.
+	/// Returns `true` if `ndx >= Self::LEN`.
 	fn is_true_from(&self, ndx: usize) -> bool;
 
 	/// New bit string with all bits set to `false`.
@@ -103,6 +103,6 @@ pub trait FixedBitString {
 	///
 	/// # Panics
 	///
-	/// Should panic if `prefix > self.len()`.
+	/// Should panic if `prefix > Self::LEN`.
 	fn contains(&self, prefix: usize, other: &Self) -> bool;
 }

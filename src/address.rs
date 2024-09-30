@@ -33,12 +33,10 @@ where
 }
 
 impl FixedBitString for Ipv4Addr {
+	const LEN: usize = 32;
+
 	fn inc(&mut self, prefix: usize) -> bool {
 		with_ipv4_mut_u32(self, |num| u32::element_inc(num, prefix))
-	}
-
-	fn len() -> usize {
-		32
 	}
 
 	fn get(&self, ndx: usize) -> bool {
@@ -54,7 +52,7 @@ impl FixedBitString for Ipv4Addr {
 	}
 
 	fn shared_prefix_len(&self, other: &Self) -> usize {
-		u32::element_shared_prefix_len(self.to_bits(), other.to_bits(), Self::len())
+		u32::element_shared_prefix_len(self.to_bits(), other.to_bits(), Self::LEN)
 	}
 
 	fn set_false_from(&mut self, ndx: usize) {
@@ -107,12 +105,10 @@ where
 }
 
 impl FixedBitString for Ipv6Addr {
+	const LEN: usize = 128;
+
 	fn inc(&mut self, prefix: usize) -> bool {
 		with_ipv6_mut_u128(self, |num| u128::element_inc(num, prefix))
-	}
-
-	fn len() -> usize {
-		128
 	}
 
 	fn get(&self, ndx: usize) -> bool {
@@ -128,7 +124,7 @@ impl FixedBitString for Ipv6Addr {
 	}
 
 	fn shared_prefix_len(&self, other: &Self) -> usize {
-		u128::element_shared_prefix_len(self.to_bits(), other.to_bits(), Self::len())
+		u128::element_shared_prefix_len(self.to_bits(), other.to_bits(), Self::LEN)
 	}
 
 	fn set_false_from(&mut self, ndx: usize) {
